@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={'autorest': ['VERSION_STAMP']},
-    install_requires=['Django>=2'],
+    install_requires=['Django>=2', 'djangorestframework>=3', 'django-filter'],
     description='A re-useable Django app for automatically building a REST API based on models.',
     long_description=long_description,
     url='https://github.com/gregschmit/django-autorest',
