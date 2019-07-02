@@ -4,7 +4,7 @@ AutoREST
 .. inclusion-marker-do-not-remove
 
 .. image:: https://readthedocs.org/projects/django-autorest/badge/?version=latest
-    :target: https://django-purge.readthedocs.io/en/latest/?badge=latest
+    :target: https://django-autorest.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 Documentation: https://django-autorest.readthedocs.io
@@ -49,17 +49,23 @@ your choosing:
 
     $ git clone https://github.com/gregschmit/django-autorest
 
-Then you can go into the :code:`django-autorest` directory and do the initial
+Then you can go into the ``django-autorest`` directory and do the initial
 migrations and run the server (you may need to type ``python3`` rather than
 ``python``):
 
 .. code-block:: shell
 
     $ cd django-autorest
-    $ python manage.py makemigrations
     $ python manage.py migrate
     $ python manage.py createsuperuser
     ...
     $ python manage.py runserver
 
 Then you can see the api at http://127.0.0.1:8000/api/.
+
+To Do
+#####
+
+- Build endpoints based on ``admin.py`` configuration (this should be optional, using a ``settings.py`` switch, like ``AUTOREST_USE_ADMIN_PY``)
+  - Rigth now, simple models like the ``auth.Group`` work, however complex models like the ``auth.User`` don't because the create API endpoint should take password/confirmation not the raw password hash.
+- Build CRUD forms for the endpoints (maybe a generator)
