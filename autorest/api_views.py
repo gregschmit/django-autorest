@@ -1,10 +1,6 @@
-from django.apps import apps
-from django.contrib.admin import site
-from django.http import HttpResponse, HttpResponseNotFound
-from django.views import generic, View
+from django.http import HttpResponse
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.views import APIView
 
 
 class CustomModelViewSetFactory:

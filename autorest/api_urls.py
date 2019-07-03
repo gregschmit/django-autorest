@@ -1,8 +1,6 @@
 from django.apps import apps
-from django.contrib import admin
-from django.urls import path
 from rest_framework import routers
-from .api_views import CustomModelViewSetFactory, intentionally_bad_api_view
+from .api_views import CustomModelViewSetFactory
 from .url_str import url_deviations
 
 

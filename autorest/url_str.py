@@ -24,7 +24,6 @@ def pascal_to_snake(s):
         if (not l.islower()) and (s[i].islower() or next_char.islower()):
             r.append('_')
         r.append(l.lower())
-        last_char = l
     return ''.join(r)
 
 
