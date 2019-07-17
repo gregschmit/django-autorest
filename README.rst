@@ -42,11 +42,11 @@ Settings
 - ``AUTOREST_CONFIG`` (default: ``{'auth':{'User':{'use_admin_site': True}}}``):
   This is a dictionary of apps, then a dictionary of models, and then a
   dictionary of configuration options:
-  - ``use_admin_site``: Whether to use the admin site to build the API.
-  - ``serializer``: An import string to a serializer instance.
-  - ``list_serializer``: An import string to a serializer instance (usually
-    providing less fields available in the listing).
-  - ``viewset``: An import string to a full viewset for this model.
+   - ``use_admin_site``: Whether to use the admin site to build the API.
+   - ``serializer``: An import string to a serializer instance.
+   - ``list_serializer``: An import string to a serializer instance (usually
+     providing less fields available in the listing).
+   - ``viewset``: An import string to a full viewset for this model.
 
 Contributing
 ============
