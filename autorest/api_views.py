@@ -13,6 +13,9 @@ from .settings import get_setting
 
 
 class ModelSerializerFactory:
+    """
+    Factory for building ``ModelSerializer`` objects for models.
+    """
 
     def __init__(self, app, model):
         self.app = app
@@ -33,21 +36,20 @@ class ModelSerializerFactory:
         )
         return cms
 
+
 class ModelViewSetFactory:
     """
-    Factory for building ModelViewSet objects for models.
+    Factory for building ``ModelViewSet`` objects for models.
     """
 
     def __init__(self):
-        # if we're using admin.py, figure out which admin site to use
         self.default_use_admin = get_setting('AUTOREST_DEFAULT_USE_ADMIN_SITE')
         self.admin_site = import_string(get_setting('AUTOREST_ADMIN_SITE'))
         self.config = get_setting('AUTOREST_CONFIG')
 
     def _get_cfg_s(self, key, config=None):
         """
-        Return and convert (from string -> class) an item from config, or
-        ``None``.
+        Return, and convert from string, an item from config, or ``None``.
         """
         if not config: config = self.config
         if issubclass(type(config.get(key, None)), str):
@@ -79,6 +81,7 @@ class ModelViewSetFactory:
             # prepare the Factory
             msf = ModelSerializerFactory(app, model_cls)
 
+            # if we are using admin, try to build
             if use_admin and self.admin_site and self.admin_site._registry[model_cls]:
                 modeladmin = self.admin_site._registry[model_cls]
 
@@ -105,15 +108,13 @@ class ModelViewSetFactory:
             if not list_serializer:
                 list_serializer = serializer
 
-        def mvs__str__(self):
-            return f"{model}ViewSet"
-
         def mvs_get_serializer_class(self):
             try:
                 return self.action_serializers[self.action]
             except KeyError:
                 pass
             return self.action_serializers['default']
+
         mvs = type(f"{app.title()}{model}ViewSet", (ModelViewSet,), {
             'model': model_cls,
             'queryset': model_cls.objects.all(),
