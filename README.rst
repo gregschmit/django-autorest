@@ -34,9 +34,9 @@ Settings
 --------
 
 - ``AUTOREST_ADMIN_SITE`` (default ``'django.contrib.admin.site'``): This is
-  the admin site where ``autorest`` can get hints on how the API should be
-  configured (e.g., list display fields, edit fields, readonly fields, etc). To
-  disable this feature entirely, just set this  to ``False``.
+  an import string to the admin site where ``autorest`` can get hints on how the
+  API should be configured (e.g., list display fields, edit fields, readonly
+  fields, etc). To disable this feature entirely, just set this  to ``False``.
 - ``AUTOREST_DEFAULT_USE_ADMIN_SITE`` (default ``False``): Whether the default
   model functionality should be to get config hints from ``admin.py``.
 - ``AUTOREST_CONFIG`` (default: ``{'auth':{'User':{'use_admin_site': True}}}``):
