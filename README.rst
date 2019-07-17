@@ -13,7 +13,8 @@ Source: https://github.com/gregschmit/django-autorest
 
 PyPI: https://pypi.org/project/django-autorest/
 
-AutoREST is a reusable Django app for building REST APIs from model definitions.
+AutoREST is a reusable Django app for building REST APIs from model definitions
+and (optionally) ``admin.py`` definitions.
 
 **The Problem**: Building APIs for models is boring.
 
@@ -27,7 +28,7 @@ How to Use
 
     $ pip install django-autorest
 
-Include ``autorest`` in your ``INSTALLED_APPS``. Then, in
+Include ``autorest`` in your ``INSTALLED_APPS``. By default, the
 
 Contributing
 ############

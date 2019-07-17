@@ -1,8 +1,16 @@
+"""
+This module implements hooks to improve the packaging process for Python
+projects that use Git.
+"""
+
 import os
 from subprocess import Popen, PIPE, STDOUT
 
 
 def cmd_out(cmd):
+    """
+    Helper for running shell commands.
+    """
     wd = os.path.dirname(os.path.realpath(__file__))
     p = Popen(cmd, shell=True, cwd=wd, stdout=PIPE, stderr=STDOUT)
     r, _ = p.communicate()
@@ -11,12 +19,16 @@ def cmd_out(cmd):
 
 
 def get_version():
+    """
+    Get the version, first by trying to read the ``VERSION_STAMP``, and if that
+    fails, by attempting to use ``git`` annotated tags.
+    """
     git_options = ['git', '/usr/local/bin/git', '/usr/bin/git']
     d = os.path.dirname(os.path.realpath(__file__))
     try:
         x = open(os.path.join(d, 'VERSION_STAMP'), 'rb').read().strip().decode()
         if x: return x
-    except FileNotFoundError:
+    except OSError:
         pass
     for g in git_options:
         gitver, _ = cmd_out('{0} describe --tags --always'.format(g))
@@ -32,12 +44,18 @@ def get_version():
 
 
 def stamp_directory(d):
+    """
+    Write the ``VERSION_STAMP`` file.
+    """
     v = get_version()
     with open(os.path.join(d, 'VERSION_STAMP'), 'wb') as f:
         f.write(v.encode() + b'\n')
 
 
 def unstamp_directory(d):
+    """
+    Remove the ``VERSION_STAMP`` file.
+    """
     os.remove(os.path.join(d, 'VERSION_STAMP'))
 
 

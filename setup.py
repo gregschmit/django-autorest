@@ -7,7 +7,7 @@ from autorest import version
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 # stamp the package prior to installation
-version.stamp_directory(os.path.join(os.getcwd(), 'autorest'))
+version.stamp_directory('./autorest')
 
 # get README
 with open('README.rst') as f:
@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={'autorest': ['VERSION_STAMP']},
-    install_requires=['Django>=2', 'djangorestframework>=3', 'django-filter'],
+    install_requires=['Django>=2', 'djangorestframework>=3', 'inflection'],
     description='A re-useable Django app for automatically building a REST API based on models.',
     long_description=long_description,
     url='https://github.com/gregschmit/django-autorest',
@@ -29,13 +29,11 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Topic :: Internet :: WWW/HTTP',
+        'Programming Language :: Python :: 3',
     ],
 )
+
+# un-stamp the package after installation
+version.unstamp_directory('./autorest')

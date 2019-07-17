@@ -1,9 +1,15 @@
+"""
+This module provides a custom verison of
+``rest_framework.permissions.DjangoModelPermissions`` that adds the ``view``
+permission.
+"""
+
 from rest_framework import permissions
 
 
 class CustomModelPermissions(permissions.DjangoModelPermissions):
     """
-    Similar to `DjangoObjectPermissions`, but adding 'view' permissions.
+    Similar to ``DjangoObjectPermissions``, but adding ``view`` permissions.
     """
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],
