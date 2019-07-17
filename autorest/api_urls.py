@@ -19,5 +19,6 @@ for app in apps.get_app_configs():
             url_pattern = "{}/{}".format(app.label, model_url)
             print("  {}".format(url_pattern))
             router.register(url_pattern, viewset)
+        print(f"   {viewset}")
 print('')
 urlpatterns = router.urls
