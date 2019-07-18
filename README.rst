@@ -7,6 +7,9 @@ AutoREST
     :target: https://django-autorest.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/gregschmit/django-autorest/badge.svg?branch=master
+    :target: https://coveralls.io/github/gregschmit/django-autorest?branch=master
+
 Documentation: https://django-autorest.readthedocs.io
 
 Source: https://github.com/gregschmit/django-autorest
