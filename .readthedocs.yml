@@ -4,6 +4,4 @@ version: 2
 python:
   version: 3.7
   install:
-    - requirements: requirements.txt
-    - method: pip
-      path: django-filter
+    - requirements: requirements-with-django-filter.txt
