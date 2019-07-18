@@ -3,4 +3,6 @@ python:
   install:
     - requirements: requirements.txt
     - method: pip
-      path: django-filter
+      path: .
+      extra_requirements:
+        - django-filter
