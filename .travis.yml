@@ -1,9 +1,15 @@
 language: python
+
 python:
   - "3.6"
 
 install:
   - pip install -r requirements.txt
+  - pip install django-filter
+  - pip install coveralls
 
 script:
   - python manage.py test
+
+after_success:
+  coveralls
