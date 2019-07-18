@@ -1,7 +1,8 @@
 python:
-   version: 3.6
-   install:
-      - method: pip
-        path: .
-        extra_requirements:
-            - django-filter
+  version: 3.6
+  install:
+    - requirements: requirements.txt
+      method: pip
+      path: .
+      extra_requirements:
+        - django-filter
