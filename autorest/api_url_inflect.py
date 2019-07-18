@@ -1,6 +1,5 @@
 """
-Using the ``inflection`` library, this module produces URL deviations for
-models.
+Use the ``inflection`` library to produce API URLs.
 """
 
 from inflection import pluralize, underscore

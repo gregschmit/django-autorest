@@ -39,6 +39,10 @@ Settings
   fields, etc). To disable this feature entirely, just set this  to ``False``.
 - ``AUTOREST_DEFAULT_USE_ADMIN_SITE`` (default ``False``): Whether the default
   model functionality should be to get config hints from ``admin.py``.
+- ``AUTOREST_DEFAULT_ENABLE`` (default: ``True``): Whether API ViewSets/URLs
+  should be built for models which don't have an explicit entry in the
+  ``AUTOREST_CONFIG``. If this option is ``False``, then only models defined in
+  the ``AUTOREST_CONFIG`` will have URLs generated for them.
 - ``AUTOREST_CONFIG`` (default: ``{'auth':{'User':{'use_admin_site': True}}}``):
   This is a dictionary of apps, then a dictionary of models, and then a
   dictionary of configuration options:

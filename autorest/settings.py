@@ -32,6 +32,7 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # app settings
 AUTOREST_ADMIN_SITE = 'django.contrib.admin.site'
 AUTOREST_DEFAULT_USE_ADMIN_SITE = False
+AUTOREST_DEFAULT_ENABLE = True
 AUTOREST_CONFIG = {
     'auth': {
         'User': {
