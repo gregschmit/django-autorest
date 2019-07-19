@@ -12,12 +12,14 @@ import os
 import sys
 
 
+me = sys.modules[__name__]
+
+
 def get_setting(name):
     """
     Hook for getting Django settings and using properties of this file as the
     default.
     """
-    me = sys.modules[__name__]
     try:
         return getattr(settings, name, getattr(me, name, None))
     except NameError:

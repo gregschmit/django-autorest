@@ -2,8 +2,6 @@
 This module implements a factory for dynamically generating ``ModelViewSet``s.
 """
 
-from django.contrib import admin
-from django.http import HttpResponse
 from django.utils.module_loading import import_string
 
 from rest_framework.serializers import ModelSerializer, CharField
@@ -20,16 +18,6 @@ action_synonyms = [
 ]
 
 
-def _action(word):
-    """
-    Return the DRF action keyword for a given word, if there exists one, else
-    return the word unchanged.
-    """
-    for group in action_synonyms:
-        if word in group: return group[0]
-    return word
-
-
 def _get_synonyms(word):
     """
     Get synonyms for this word, or a list with this word in it only.
@@ -37,6 +25,14 @@ def _get_synonyms(word):
     for group in action_synonyms:
         if word in group: return group
     return [word]
+
+
+def _action(word):
+    """
+    Return the DRF action keyword for a given word, if there exists one, else
+    return the word unchanged.
+    """
+    return _get_synonyms(word)[0]
 
 
 class ModelSerializerFactory:
@@ -173,7 +169,7 @@ class ModelViewSetFactory:
 
         # try to retrieve configured serializers
         serializers['default'] = self._get_cfg_s('serializer', model_cfg)
-        for name,serializer in serializers.items():
+        for name, _ in serializers.items():
             synonyms = _get_synonyms(name)
             for action in synonyms:
                 s = self._get_cfg_s(f'{action}_serializer', model_cfg)
@@ -205,10 +201,3 @@ class ModelViewSetFactory:
         })
 
         return mvs
-
-
-def intentionally_bad_api_view(request):
-    """
-    For development/testing purposes; renders invalid JSON.
-    """
-    return HttpResponse('{{"data": 5}')
