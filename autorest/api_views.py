@@ -11,7 +11,7 @@ from .settings import get_setting
 
 
 # the first entry in each list should be the DRF action name.
-action_synonyms = [
+ACTION_SYNONYMS = [
     ['create', 'add'],
     ['retrieve', 'detail'],
     ['destroy', 'delete'],
@@ -22,7 +22,7 @@ def _get_synonyms(word):
     """
     Get synonyms for this word, or a list with this word in it only.
     """
-    for group in action_synonyms:
+    for group in ACTION_SYNONYMS:
         if word in group: return group
     return [word]
 

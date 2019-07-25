@@ -2,6 +2,10 @@
 This module provides a custom verison of
 ``rest_framework.permissions.DjangoModelPermissions`` that adds the ``view``
 permission.
+
+TODO: should be removed when DRF Ticket #6324 is resolved (likely by PR #6325):
+ - https://github.com/encode/django-rest-framework/issues/6324)
+ - https://github.com/encode/django-rest-framework/pull/6325
 """
 
 from rest_framework import permissions

@@ -12,7 +12,6 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from .api_url_inflect import url_deviations
 from .api_views import _action, _get_synonyms
-from .middleware import TimeDelayMiddleware
 from .version import get_version, stamp_directory, unstamp_directory
 
 
@@ -67,32 +66,6 @@ class APIViewsTestCase(TestCase):
         self.assertEqual(_action('add'), 'create')
         self.assertEqual(_action('detail'), 'retrieve')
         self.assertEqual(_action('delete'), 'destroy')
-
-
-class MiddlewareTestCase(TestCase):
-    """
-    Tests for the middleware.
-    """
-
-    def setUp(self):
-        self.tdm = TimeDelayMiddleware(lambda x: x, 1)
-        self.ftdm = TimeDelayMiddleware(lambda x: x, 0.5)
-        self.req = type('TestRequest', (object,), {'path': 'nothing'})
-        self.api_req = type('TestAPIRequest', (object,), {'path': '/api/thing'})
-
-    def test_callable(self):
-        self.assertTrue(callable(self.tdm))
-        self.assertTrue(callable(self.ftdm))
-
-    def test_delay_type(self):
-        self.assertTrue(isinstance(self.tdm.delay, (int, float)))
-        self.assertTrue(isinstance(self.ftdm.delay, (int, float)))
-
-    def test_call(self):
-        self.assertTrue(self.tdm(self.req))
-
-    def test_api_call(self):
-        self.assertTrue(self.tdm(self.api_req))
 
 
 class VersionTestCase(TestCase):

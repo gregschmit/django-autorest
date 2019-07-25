@@ -38,7 +38,7 @@ AUTOREST_DEFAULT_ENABLE = True
 AUTOREST_CONFIG = {
     'auth': {
         'User': {
-            'use_admin_site': True,
+            'viewset': 'autorest.sample_user_viewset.UserViewSet',
         },
     },
 }
@@ -70,7 +70,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'autorest.middleware.TimeDelayMiddleware',
 ]
 ROOT_URLCONF = 'autorest.urls'
 TEMPLATES = [

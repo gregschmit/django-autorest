@@ -1,5 +1,7 @@
 """
-This module builds the API URLs and hooks in the API ``ViewSet``s.
+This module calls the ``ModelViewSetFactory`` to either get or build the
+viewsets and then registers them to this module's ``urlpatterns`` to allow for
+being included by other URL dispatchers.
 """
 
 from django.apps import apps
@@ -10,7 +12,7 @@ from .api_url_inflect import url_deviations
 
 
 print("AutoREST: building API resources for models:")
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 viewset_factory = ModelViewSetFactory()
 for app in apps.get_app_configs():
     for model in app.get_models():
