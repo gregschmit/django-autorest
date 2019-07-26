@@ -1,4 +1,0 @@
-Django>=2
-djangorestframework>=3
-inflection
-django-filter

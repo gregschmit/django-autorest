@@ -53,16 +53,8 @@ class ModelSerializerFactory:
         hard_fields = {}
         if write_only_fields:
             for f in write_only_fields:
-                # remove from normal fields
-                # try:
-                #     fields.remove(f)
-                # except ValueError:
-                #     pass
-                # add CharField
                 cf = CharField(write_only=True)
                 hard_fields[f] = cf
-            #extra = {k: {'write_only': True} for k in write_only_fields}
-            #meta['extra_kwargs'] = extra
         cms_meta = type('Meta', (object,), {**meta})
         cms = type(
             f"{self.app.title()}{self.model.__name__}{stype}Serializer",

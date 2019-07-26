@@ -34,5 +34,5 @@ def configure_router(router, silent=False):
     return router
 
 
-router = configure_router(routers.DefaultRouter())
-urlpatterns = router.urls
+api_router = configure_router(routers.DefaultRouter())
+urlpatterns = api_router.urls
