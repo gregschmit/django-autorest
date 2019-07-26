@@ -3,12 +3,18 @@ AutoREST
 
 .. inclusion-marker-do-not-remove
 
-.. image:: https://readthedocs.org/projects/django-autorest/badge/?version=latest
-    :target: https://django-autorest.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+.. image:: https://travis-ci.org/gregschmit/django-autorest.svg?branch=master
+    :target: https://travis-ci.org/gregschmit/django-autorest
+
+.. image:: https://img.shields.io/pypi/v/django-autorest
+    :alt: PyPI
 
 .. image:: https://coveralls.io/repos/github/gregschmit/django-autorest/badge.svg?branch=master
     :target: https://coveralls.io/github/gregschmit/django-autorest?branch=master
+
+.. image:: https://readthedocs.org/projects/django-autorest/badge/?version=latest
+    :target: https://django-autorest.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 Documentation: https://django-autorest.readthedocs.io
 
