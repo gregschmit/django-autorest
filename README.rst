@@ -45,17 +45,17 @@ Include ``autorest`` in your ``INSTALLED_APPS``.
 Settings
 --------
 
-* ``AUTOREST_ADMIN_SITE`` (default ``'django.contrib.admin.site'``): This is
+- ``AUTOREST_ADMIN_SITE`` (default ``'django.contrib.admin.site'``): This is
   an import string to the admin site where ``autorest`` can get hints on how the
   API should be configured (e.g., list display fields, edit fields, readonly
   fields, etc). To disable this feature entirely, just set this  to ``False``.
-* ``AUTOREST_DEFAULT_USE_ADMIN_SITE`` (default ``False``): Whether the default
+- ``AUTOREST_DEFAULT_USE_ADMIN_SITE`` (default ``False``): Whether the default
   model functionality should be to get config hints from ``admin.py``.
-* ``AUTOREST_DEFAULT_ENABLE`` (default: ``True``): Whether API ViewSets/URLs
+- ``AUTOREST_DEFAULT_ENABLE`` (default: ``True``): Whether API ViewSets/URLs
   should be built for models which don't have an explicit entry in the
   ``AUTOREST_CONFIG``. If this option is ``False``, then only models defined in
   the ``AUTOREST_CONFIG`` will have URLs generated for them.
-* ``AUTOREST_CONFIG`` default:
+- ``AUTOREST_CONFIG`` default:
 
 .. code-block:: python
 
@@ -74,11 +74,11 @@ Settings
 ``AUTOREST_CONFIG`` Options:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* ``use_admin_site``: Whether to use the admin site to build the API.
-* ``serializer``: An import string to a serializer instance.
-* ``list_serializer``: An import string to a serializer instance (usually
+- ``use_admin_site``: Whether to use the admin site to build the API.
+- ``serializer``: An import string to a serializer instance.
+- ``list_serializer``: An import string to a serializer instance (usually
   providing less fields available in the listing).
-* ``viewset``: An import string to a full viewset for this model.
+- ``viewset``: An import string to a full viewset for this model.
 
 
 Contributing
