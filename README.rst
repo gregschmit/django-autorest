@@ -77,7 +77,7 @@ Settings
 * ``use_admin_site``: Whether to use the admin site to build the API.
 * ``serializer``: An import string to a serializer instance.
 * ``list_serializer``: An import string to a serializer instance (usually
-    providing less fields available in the listing).
+  providing less fields available in the listing).
 * ``viewset``: An import string to a full viewset for this model.
 
 
