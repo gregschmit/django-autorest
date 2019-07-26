@@ -8,6 +8,7 @@ AutoREST
 
 .. image:: https://img.shields.io/pypi/v/django-autorest
     :alt: PyPI
+    :target: https://pypi.org/project/django-autorest/
 
 .. image:: https://coveralls.io/repos/github/gregschmit/django-autorest/badge.svg?branch=master
     :target: https://coveralls.io/github/gregschmit/django-autorest?branch=master
