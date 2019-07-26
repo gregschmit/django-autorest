@@ -114,10 +114,3 @@ migrations and run the server (you may need to type ``python3`` rather than
     $ python manage.py runserver
 
 Then you can see the api at http://127.0.0.1:8000/api/.
-
-To Do
-=====
-
-- Build endpoints based on ``admin.py`` configuration (this should be optional, using a ``settings.py`` switch, like ``AUTOREST_USE_ADMIN_PY``)
-  - Rigth now, simple models like the ``auth.Group`` work, however complex models like the ``auth.User`` don't because the create API endpoint should take password/confirmation not the raw password hash.
-- Build CRUD forms for the endpoints (maybe a generator)
