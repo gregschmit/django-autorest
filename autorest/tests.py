@@ -10,9 +10,10 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
+from . import version, wsgi
 from .api_url_inflect import url_deviations
-from .api_views import _action, _get_synonyms
-from .version import get_version, stamp_directory, unstamp_directory
+from .api_views import _action, _get_synonyms, ModelViewSetFactory
+from .settings import get_setting
 
 
 class URLDeviationsTestCase(TestCase):
@@ -73,23 +74,23 @@ class VersionTestCase(TestCase):
     Tests for versioning script.
     """
 
+    def setUp(self):
+        # put us into the package directory
+        os.chdir(os.path.normpath(os.path.dirname(os.path.abspath(__file__))))
+
     def test_version_is_str(self):
-        self.assertTrue(isinstance(get_version(), str))
+        self.assertTrue(isinstance(version.get_version(), str))
 
     def test_stamp_unstamp(self):
-        os.chdir(os.path.normpath(os.path.join(
-            os.path.abspath(__file__),
-            os.pardir,
-        )))
         stamp_location = './VERSION_STAMP'
         try:
             os.remove(stamp_location)
         except OSError:
             pass
-        stamp_directory('.')
+        version.stamp_directory('.')
         self.assertTrue(os.path.exists(stamp_location))
         self.assertTrue(os.path.isfile(stamp_location))
-        unstamp_directory('.')
+        version.unstamp_directory('.')
         self.assertFalse(os.path.exists(stamp_location))
 
 
@@ -99,8 +100,32 @@ class WsgiTestCase(TestCase):
     """
 
     def test_wsgi_simple(self):
-        from . import wsgi
         self.assertTrue(wsgi.application)
+
+
+class ModelViewSetFactoryTestCase(TestCase):
+    """
+    Testing that the viewset factory works with various configuration options.
+    """
+
+    def setUp(self):
+        self.user_admin_viewset_factory = ModelViewSetFactory(
+            default_enable=False,
+            default_use_admin=True,
+            admin_site=get_setting('AUTOREST_ADMIN_SITE'),
+            config={
+                'auth': {
+                    'User': {
+                        'use_admin_site': True,
+                    },
+                },
+            },
+        )
+        self.user_model = User
+
+    def test_build_user_admin_viewset(self):
+        viewset = self.user_admin_viewset_factory.build(self.user_model)
+        self.assertTrue(viewset)
 
 
 class APITestCase(APITestCase):
@@ -120,6 +145,11 @@ class APITestCase(APITestCase):
             email='john_doe@example.com',
             password='bottom_secret',
         )
+        self.plain_user = User.objects.create_user(
+            username='johnny_doe',
+            email='johnny_doe@example.com',
+            password='plain_secret',
+        )
 
     def test_unauthorized_group_list(self):
         url = reverse('group-list')
@@ -131,4 +161,52 @@ class APITestCase(APITestCase):
         self.client.login(username='greg_schmit', password='top_secret')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.logout()
+
+    def test_create_user(self):
+        url = reverse('user-list')
+        self.client.login(username='greg_schmit', password='top_secret')
+        response = self.client.post(url, {
+            'username': 'testuser',
+            'password_first': 'test_secret',
+            'password_confirmation': 'test_secret',
+            'email': 'testuser@example.com',
+        })
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.client.logout()
+
+    def test_create_user_failure(self):
+        url = reverse('user-list')
+        self.client.login(username='greg_schmit', password='top_secret')
+        response = self.client.post(url, {
+            'username': 'testuserfail',
+            'password_first': 'test_secret',
+            'password_confirmation': 'test_sedret',
+            'email': 'testuserfail@example.com',
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.client.logout()
+
+    def test_update_user(self):
+        url = reverse('user-detail', args=[self.plain_user.pk])
+        self.client.login(username='greg_schmit', password='top_secret')
+        response = self.client.patch(url, {
+            'email': 'mr_johnny_doe@example.com',
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.plain_user.refresh_from_db()
+        self.assertEqual(self.plain_user.email, 'mr_johnny_doe@example.com')
+        self.client.logout()
+
+    def test_update_user_password(self):
+        url = reverse('user-detail', args=[self.plain_user.pk])
+        self.client.login(username='greg_schmit', password='top_secret')
+        old_password = self.plain_user.password
+        response = self.client.patch(url, {
+            'password_first': 'new_plain_secret',
+            'password_confirmation': 'new_plain_secret',
+        })
+        self.plain_user.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(old_password, self.plain_user.password)
         self.client.logout()

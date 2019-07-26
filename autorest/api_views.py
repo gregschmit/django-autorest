@@ -7,8 +7,6 @@ from django.utils.module_loading import import_string
 from rest_framework.serializers import ModelSerializer, CharField
 from rest_framework.viewsets import ModelViewSet
 
-from .settings import get_setting
-
 
 # the first entry in each list should be the DRF action name.
 ACTION_SYNONYMS = [
@@ -79,10 +77,13 @@ class ModelViewSetFactory:
     Factory for building ``ModelViewSet`` objects for models.
     """
 
-    def __init__(self):
-        self.default_use_admin = get_setting('AUTOREST_DEFAULT_USE_ADMIN_SITE')
-        self.admin_site = import_string(get_setting('AUTOREST_ADMIN_SITE'))
-        self.config = get_setting('AUTOREST_CONFIG')
+    def __init__(self, default_enable, default_use_admin, admin_site, config):
+        self.default_enable = default_enable
+        self.default_use_admin = default_use_admin
+        if isinstance(admin_site, str):
+            admin_site = import_string(admin_site)
+        self.admin_site = admin_site
+        self.config = config
 
     def _get_cfg_s(self, key, config=None):
         """
@@ -156,7 +157,7 @@ class ModelViewSetFactory:
         model_cfg = self.config.get(app, {}).get(model_name, {})
 
         # check if we should be processing this model
-        if not get_setting('AUTOREST_DEFAULT_ENABLE') and not model_cfg:
+        if not self.default_enable and not model_cfg:
             return False
 
         # check if we already have a viewset

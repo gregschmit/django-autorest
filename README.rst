@@ -54,6 +54,9 @@ Settings
 
     {
         'auth': {
+            'Group': {
+                'use_admin_site': True,
+            },
             'User': {
                 'viewset': 'autorest.sample_user_viewset.UserViewSet',
             },

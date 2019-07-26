@@ -41,11 +41,17 @@ class UserSerializer(ModelSerializer):
         return pw
 
     def create(self, validated_data):
-        password = self.get_password(validated_data)
+        pw = self.get_password(validated_data)
         superuser = validated_data.pop('is_superuser', None)
+        groups = validated_data.pop('groups', None)
+        user_permissions = validated_data.pop('user_permissions', None)
         if superuser:
-            return User.objects.create_superuser(password=pw, **validated_data)
-        return User.objects.create_user(password=pw, **validated_data)
+            u = User.objects.create_superuser(password=pw, **validated_data)
+        else:
+            u = User.objects.create_user(password=pw, **validated_data)
+        u.groups.set(groups)
+        u.user_permissions.set(user_permissions)
+        return u
 
 
 class UserDetailSerializer(UserSerializer):
@@ -66,9 +72,9 @@ class UserDetailSerializer(UserSerializer):
         }
 
     def update(self, instance, validated_data):
-        password = self.get_password(validated_data, required=False)
-        if password:
-            instance.set_password(password)
+        pw = self.get_password(validated_data, required=False)
+        if pw:
+            instance.set_password(pw)
         return super().update(instance, validated_data)
 
 
