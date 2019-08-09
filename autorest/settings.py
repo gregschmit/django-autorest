@@ -37,9 +37,6 @@ AUTOREST_DEFAULT_USE_ADMIN_SITE = False
 AUTOREST_DEFAULT_ENABLE = True
 AUTOREST_CONFIG = {
     'auth': {
-        'Group': {
-            'use_admin_site': True,
-        },
         'User': {
             'viewset': 'autorest.sample_user_viewset.UserViewSet',
         },
