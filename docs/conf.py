@@ -21,7 +21,7 @@ import django
 sys.path.insert(0, os.path.abspath('..'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'autorest.settings'
 django.setup()
-from autorest import version as ver
+import autorest
 
 
 # -- Project information -----------------------------------------------------
@@ -31,7 +31,7 @@ copyright = '2019, Gregory N. Schmit'
 author = 'Gregory N. Schmit'
 
 # The short X.Y version
-version = ver.get_version().split('+')[0]
+version = autorest.__version__
 # The full version, including alpha/beta/rc tags
 release = version
 

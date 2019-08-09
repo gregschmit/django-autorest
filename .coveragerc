@@ -1,0 +1,3 @@
+[run]
+source = autorest
+omit = autorest/settings.py

@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from . import version, wsgi
+from . import wsgi
 from .api_url_inflect import url_deviations
 from .api_views import _action, _get_synonyms, ModelViewSetFactory
 from .settings import get_setting
@@ -67,31 +67,6 @@ class APIViewsTestCase(TestCase):
         self.assertEqual(_action('add'), 'create')
         self.assertEqual(_action('detail'), 'retrieve')
         self.assertEqual(_action('delete'), 'destroy')
-
-
-class VersionTestCase(TestCase):
-    """
-    Tests for versioning script.
-    """
-
-    def setUp(self):
-        # put us into the package directory
-        os.chdir(os.path.normpath(os.path.dirname(os.path.abspath(__file__))))
-
-    def test_version_is_str(self):
-        self.assertTrue(isinstance(version.get_version(), str))
-
-    def test_stamp_unstamp(self):
-        stamp_location = './VERSION_STAMP'
-        try:
-            os.remove(stamp_location)
-        except OSError:
-            pass
-        version.stamp_directory('.')
-        self.assertTrue(os.path.exists(stamp_location))
-        self.assertTrue(os.path.isfile(stamp_location))
-        version.unstamp_directory('.')
-        self.assertFalse(os.path.exists(stamp_location))
 
 
 class WsgiTestCase(TestCase):
