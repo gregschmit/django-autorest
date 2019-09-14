@@ -6,14 +6,15 @@ need to salt/hash the password prior to storing it, so it's a bit more complex
 than just serializing some fields.
 """
 
+from action_serializer import ModelActionSerializer
 from django.contrib.auth.models import User
-from rest_framework.serializers import CharField, ModelSerializer, ValidationError
+from rest_framework.serializers import CharField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(ModelActionSerializer):
     """
-    An example serializer for the Django ``User`` model.
+    An example action serializer for the Django User model.
     """
 
     password_first = CharField(label="Password", write_only=True, required=False)
@@ -38,7 +39,14 @@ class UserSerializer(ModelSerializer):
             "groups",
             "user_permissions",
         )
-        extra_kwargs = {"password": {"read_only": True}}
+        extra_kwargs = {
+            "password": {"read_only": True},
+            "date_joined": {"read_only": True},
+            "last_login": {"read_only": True},
+        }
+        action_fields = {
+            "list": {"fields": ["id", "username", "first_name", "last_name"]}
+        }
 
     def get_password(self, validated_data, required=True):
         pw = validated_data.pop("password_first", None)
@@ -65,37 +73,6 @@ class UserSerializer(ModelSerializer):
         u.user_permissions.set(user_permissions)
         return u
 
-
-class UserDetailSerializer(UserSerializer):
-    """
-    An example serializer for the Django ``User`` model with details.
-    """
-
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "username",
-            "password",
-            "password_first",
-            "password_confirmation",
-            "email",
-            "first_name",
-            "last_name",
-            "is_active",
-            "is_staff",
-            "is_superuser",
-            "last_login",
-            "date_joined",
-            "groups",
-            "user_permissions",
-        )
-        extra_kwargs = {
-            "password": {"read_only": True},
-            "date_joined": {"read_only": True},
-            "last_login": {"read_only": True},
-        }
-
     def update(self, instance, validated_data):
         pw = self.get_password(validated_data, required=False)
         if pw:
@@ -108,11 +85,5 @@ class UserViewSet(ModelViewSet):
     An example viewset for the Django ``User`` model.
     """
 
+    serializer_class = UserSerializer
     queryset = User.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ("list", "create", "destroy"):
-            return UserSerializer
-        elif self.action in ("retrieve", "update", "partial_update"):
-            return UserDetailSerializer
-        return None
