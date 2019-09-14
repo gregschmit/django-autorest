@@ -1,2 +1,2 @@
-__version__ = "0.7.1"
+__version__ = "1.0.0"
 default_app_config = "autorest.apps.CustomConfig"
