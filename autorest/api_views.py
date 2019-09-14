@@ -18,7 +18,7 @@ class ModelSerializerFactory:
         self.app = app
         self.model = model
 
-    def build(self, fields="__all__", write_only_fields=None, action_fields=None):
+    def build(self, fields="__all__", write_only_fields=None, action_fields={}):
         """
         Build a custom ``ModelActionSerializer``.
         """
@@ -74,42 +74,40 @@ class ModelViewSetFactory:
         # get the model admin
         admin = self.admin_site._registry[model]
 
-        # TODO: build action serializer from admin
-        # try to build the serializer by type
-        serializer = None
-        # pk_field = model._meta.pk.name
-        # if name == "list":
-        #     if hasattr(admin, "list_display") and admin.list_display:
-        #         pk = []
-        #         if not pk_field in admin.list_display:
-        #             pk.append(pk_field)
-        #         serializer = msf.build("List", [*pk, *admin.list_display])
-        # elif name == "create":
-        #     if hasattr(admin, "add_fieldsets") and admin.add_fieldsets:
-        #         f = []
-        #         [f.extend(y.get("fields", [])) for x, y in admin.add_fieldsets]
-        #         serializer = msf.build("Create", f, f)
-        #     elif hasattr(admin, "fields") and admin.fields:
-        #         serializer = msf.build("Create", admin.fields)
-        # else:
-        #     if hasattr(admin, "fieldsets") and admin.fieldsets:
-        #         f = []
-        #         [f.extend(y.get("fields", [])) for x, y in admin.fieldsets]
-        #         pk = []
-        #         if not pk_field in f:
-        #             pk.append(pk_field)
-        #         serializer = msf.build("CustomDefault", [*pk, *f])
-        #     elif hasattr(admin, "fields") and admin.fields:
-        #         pk = []
-        #         if not pk_field in f:
-        #             pk.append(pk_field)
-        #         serializer = msf.build("CustomDefault", [*pk, *admin.fields])
+        # build actions if the right admin properties are defined
+        action_fields = {}
+        pk_field = model._meta.pk.name
+        if hasattr(admin, "list_display") and admin.list_display:
+            action_fields["list"] = {}
+            action_fields["list"]["fields"] = []
+            if not pk_field in admin.list_display:
+                action_fields["list"]["fields"].append(pk_field)
+            action_fields["list"]["fields"].extend(admin.list_display)
+        if hasattr(admin, "add_fieldsets") and admin.add_fieldsets:
+            action_fields["create"] = {}
+            action_fields["create"]["fields"] = []
+            [
+                action_fields["create"]["fields"].extend(y.get("fields", []))
+                for _, y in admin.add_fieldsets
+            ]
+        elif hasattr(admin, "fieldsets") and admin.fieldsets:
+            action_fields["create"] = {}
+            action_fields["create"]["fields"] = []
+            action_fields["update"] = {}
+            action_fields["update"]["fields"] = []
+            for _, group in admin.add_fieldsets:
+                f = group.get("fields", [])
+                action_fields["create"]["fields"].extend(f)
+                action_fields["update"]["fields"].extend(f)
+        elif hasattr(admin, "fields") and admin.fields:
+            action_fields["create"] = {}
+            action_fields["create"]["fields"] = []
+            action_fields["update"] = {}
+            action_fields["update"]["fields"] = []
+            action_fields["create"]["fields"].extend(admin.fields)
+            action_fields["update"]["fields"].extend(admin.fields)
 
-        # again, we must provide a serializer for default
-        if not serializer:
-            serializer = msf.build()
-
-        return serializer
+        return msf.build(action_fields=action_fields)
 
     def build(self, model):
         """
@@ -129,7 +127,7 @@ class ModelViewSetFactory:
         if viewset:
             return viewset
 
-        # try to retrieve configured serializers
+        # try to retrieve configured serializer
         serializer = self._get_cfg_s("serializer", model_cfg)
 
         # if we don't have a serializer, then build!
@@ -144,7 +142,7 @@ class ModelViewSetFactory:
                 "model": model,
                 "queryset": model.objects.all(),
                 "filterset_fields": "__all__",
-                "serializer": serializer,
+                "serializer_class": serializer,
             },
         )
 

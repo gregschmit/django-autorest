@@ -16,7 +16,9 @@ setup(
     version=autorest.__version__,
     packages=find_packages(),
     install_requires=["Django>=2", "djangorestframework>=3", "inflection"],
-    description="A re-useable Django app for automatically building a REST API based on models.",
+    description=(
+        "A re-useable Django app for automatically building a REST API based on models."
+    ),
     long_description=long_description,
     url="https://github.com/gregschmit/django-autorest",
     author="Gregory N. Schmit",

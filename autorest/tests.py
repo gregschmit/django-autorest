@@ -12,7 +12,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from . import wsgi
 from .api_url_inflect import url_deviations
-from .api_views import _action, ModelViewSetFactory
+from .api_views import ModelViewSetFactory
 from .settings import get_setting
 
 
