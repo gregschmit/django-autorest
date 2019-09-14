@@ -12,7 +12,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from . import wsgi
 from .api_url_inflect import url_deviations
-from .api_views import _action, _get_synonyms, ModelViewSetFactory
+from .api_views import _action, ModelViewSetFactory
 from .settings import get_setting
 
 
@@ -22,51 +22,23 @@ class URLDeviationsTestCase(TestCase):
     """
 
     def test_simple(self):
-        d = url_deviations('Thing')
-        self.assertIn('thing', d)
-        self.assertIn('things', d)
+        d = url_deviations("Thing")
+        self.assertIn("thing", d)
+        self.assertIn("things", d)
 
     def test_two_simple_words(self):
-        d = url_deviations('SomeThing')
-        self.assertIn('something', d)
-        self.assertIn('somethings', d)
-        self.assertIn('some_thing', d)
-        self.assertIn('some_things', d)
+        d = url_deviations("SomeThing")
+        self.assertIn("something", d)
+        self.assertIn("somethings", d)
+        self.assertIn("some_thing", d)
+        self.assertIn("some_things", d)
 
     def test_acronyms(self):
-        d = url_deviations('PCSystem')
-        self.assertIn('pcsystem', d)
-        self.assertIn('pcsystems', d)
-        self.assertIn('pc_system', d)
-        self.assertIn('pc_systems', d)
-
-
-class APIViewsTestCase(TestCase):
-    """
-    Tests for the API View module.
-    """
-
-    def test_builtin_synonyms(self):
-        self.assertEqual(_get_synonyms('create'), ['create', 'add'])
-        self.assertEqual(_get_synonyms('add'), ['create', 'add'])
-        self.assertEqual(_get_synonyms('retrieve'), ['retrieve', 'detail'])
-        self.assertEqual(_get_synonyms('detail'), ['retrieve', 'detail'])
-        self.assertEqual(_get_synonyms('destroy'), ['destroy', 'delete'])
-        self.assertEqual(_get_synonyms('delete'), ['destroy', 'delete'])
-
-    def test_unknown_synonyms(self):
-        self.assertEqual(_get_synonyms('blast'), ['blast'])
-        self.assertEqual(_get_synonyms('edit'), ['edit'])
-
-    def test_primary_actions(self):
-        self.assertEqual(_action('create'), 'create')
-        self.assertEqual(_action('retrieve'), 'retrieve')
-        self.assertEqual(_action('destroy'), 'destroy')
-
-    def test_synonymous_actions(self):
-        self.assertEqual(_action('add'), 'create')
-        self.assertEqual(_action('detail'), 'retrieve')
-        self.assertEqual(_action('delete'), 'destroy')
+        d = url_deviations("PCSystem")
+        self.assertIn("pcsystem", d)
+        self.assertIn("pcsystems", d)
+        self.assertIn("pc_system", d)
+        self.assertIn("pc_systems", d)
 
 
 class WsgiTestCase(TestCase):
@@ -87,14 +59,8 @@ class ModelViewSetFactoryTestCase(TestCase):
         self.user_admin_viewset_factory = ModelViewSetFactory(
             default_enable=False,
             default_use_admin=True,
-            admin_site=get_setting('AUTOREST_ADMIN_SITE'),
-            config={
-                'auth': {
-                    'User': {
-                        'use_admin_site': True,
-                    },
-                },
-            },
+            admin_site=get_setting("AUTOREST_ADMIN_SITE"),
+            config={"auth": {"User": {"use_admin_site": True}}},
         )
         self.user_model = User
 
@@ -111,76 +77,81 @@ class APITestCase(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = User.objects.create_superuser(
-            username='greg_schmit',
-            email='greg_schmit@example.com',
-            password='top_secret',
+            username="greg_schmit",
+            email="greg_schmit@example.com",
+            password="top_secret",
         )
         self.other_user = User.objects.create_superuser(
-            username='john_doe',
-            email='john_doe@example.com',
-            password='bottom_secret',
+            username="john_doe", email="john_doe@example.com", password="bottom_secret"
         )
         self.plain_user = User.objects.create_user(
-            username='johnny_doe',
-            email='johnny_doe@example.com',
-            password='plain_secret',
+            username="johnny_doe",
+            email="johnny_doe@example.com",
+            password="plain_secret",
         )
 
     def test_unauthorized_group_list(self):
-        url = reverse('group-list')
+        url = reverse("group-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_authorized_group_list(self):
-        url = reverse('group-list')
-        self.client.login(username='greg_schmit', password='top_secret')
+        url = reverse("group-list")
+        self.client.login(username="greg_schmit", password="top_secret")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.client.logout()
 
     def test_create_user(self):
-        url = reverse('user-list')
-        self.client.login(username='greg_schmit', password='top_secret')
-        response = self.client.post(url, {
-            'username': 'testuser',
-            'password_first': 'test_secret',
-            'password_confirmation': 'test_secret',
-            'email': 'testuser@example.com',
-        })
+        url = reverse("user-list")
+        self.client.login(username="greg_schmit", password="top_secret")
+        response = self.client.post(
+            url,
+            {
+                "username": "testuser",
+                "password_first": "test_secret",
+                "password_confirmation": "test_secret",
+                "email": "testuser@example.com",
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.client.logout()
 
     def test_create_user_failure(self):
-        url = reverse('user-list')
-        self.client.login(username='greg_schmit', password='top_secret')
-        response = self.client.post(url, {
-            'username': 'testuserfail',
-            'password_first': 'test_secret',
-            'password_confirmation': 'test_sedret',
-            'email': 'testuserfail@example.com',
-        })
+        url = reverse("user-list")
+        self.client.login(username="greg_schmit", password="top_secret")
+        response = self.client.post(
+            url,
+            {
+                "username": "testuserfail",
+                "password_first": "test_secret",
+                "password_confirmation": "test_sedret",
+                "email": "testuserfail@example.com",
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.client.logout()
 
     def test_update_user(self):
-        url = reverse('user-detail', args=[self.plain_user.pk])
-        self.client.login(username='greg_schmit', password='top_secret')
-        response = self.client.patch(url, {
-            'email': 'mr_johnny_doe@example.com',
-        })
+        url = reverse("user-detail", args=[self.plain_user.pk])
+        self.client.login(username="greg_schmit", password="top_secret")
+        response = self.client.patch(url, {"email": "mr_johnny_doe@example.com"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.plain_user.refresh_from_db()
-        self.assertEqual(self.plain_user.email, 'mr_johnny_doe@example.com')
+        self.assertEqual(self.plain_user.email, "mr_johnny_doe@example.com")
         self.client.logout()
 
     def test_update_user_password(self):
-        url = reverse('user-detail', args=[self.plain_user.pk])
-        self.client.login(username='greg_schmit', password='top_secret')
+        url = reverse("user-detail", args=[self.plain_user.pk])
+        self.client.login(username="greg_schmit", password="top_secret")
         old_password = self.plain_user.password
-        response = self.client.patch(url, {
-            'password_first': 'new_plain_secret',
-            'password_confirmation': 'new_plain_secret',
-        })
+        response = self.client.patch(
+            url,
+            {
+                "password_first": "new_plain_secret",
+                "password_confirmation": "new_plain_secret",
+            },
+        )
         self.plain_user.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(old_password, self.plain_user.password)

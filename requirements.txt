@@ -1,3 +1,4 @@
 Django>=2
 djangorestframework>=3
+drf-action-serializer
 inflection

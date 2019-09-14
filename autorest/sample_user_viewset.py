@@ -15,22 +15,34 @@ class UserSerializer(ModelSerializer):
     """
     An example serializer for the Django ``User`` model.
     """
-    password_first = CharField(label='Password', write_only=True, required=False)
+
+    password_first = CharField(label="Password", write_only=True, required=False)
     password_confirmation = CharField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'password_first',
-            'password_confirmation', 'email', 'first_name', 'last_name',
-            'is_active', 'is_staff', 'is_superuser', 'last_login',
-            'date_joined', 'groups', 'user_permissions')
-        extra_kwargs = {
-            'password': {'read_only': True},
-        }
+        fields = (
+            "id",
+            "username",
+            "password",
+            "password_first",
+            "password_confirmation",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "last_login",
+            "date_joined",
+            "groups",
+            "user_permissions",
+        )
+        extra_kwargs = {"password": {"read_only": True}}
 
     def get_password(self, validated_data, required=True):
-        pw = validated_data.pop('password_first', None)
-        pw_confirm = validated_data.pop('password_confirmation', None)
+        pw = validated_data.pop("password_first", None)
+        pw_confirm = validated_data.pop("password_confirmation", None)
         if not pw:
             if required:
                 raise ValidationError("A password must be provided!")
@@ -42,9 +54,9 @@ class UserSerializer(ModelSerializer):
 
     def create(self, validated_data):
         pw = self.get_password(validated_data)
-        superuser = validated_data.pop('is_superuser', None)
-        groups = validated_data.pop('groups', None)
-        user_permissions = validated_data.pop('user_permissions', None)
+        superuser = validated_data.pop("is_superuser", None)
+        groups = validated_data.pop("groups", None)
+        user_permissions = validated_data.pop("user_permissions", None)
         if superuser:
             u = User.objects.create_superuser(password=pw, **validated_data)
         else:
@@ -61,14 +73,27 @@ class UserDetailSerializer(UserSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'password_first',
-            'password_confirmation', 'email', 'first_name', 'last_name',
-            'is_active', 'is_staff', 'is_superuser', 'last_login',
-            'date_joined', 'groups', 'user_permissions')
+        fields = (
+            "id",
+            "username",
+            "password",
+            "password_first",
+            "password_confirmation",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+            "last_login",
+            "date_joined",
+            "groups",
+            "user_permissions",
+        )
         extra_kwargs = {
-            'password': {'read_only': True},
-            'date_joined': {'read_only': True},
-            'last_login': {'read_only': True},
+            "password": {"read_only": True},
+            "date_joined": {"read_only": True},
+            "last_login": {"read_only": True},
         }
 
     def update(self, instance, validated_data):
@@ -82,11 +107,12 @@ class UserViewSet(ModelViewSet):
     """
     An example viewset for the Django ``User`` model.
     """
+
     queryset = User.objects.all()
 
     def get_serializer_class(self):
-        if self.action in ('list', 'create', 'destroy'):
+        if self.action in ("list", "create", "destroy"):
             return UserSerializer
-        elif self.action in ('retrieve', 'update', 'partial_update'):
+        elif self.action in ("retrieve", "update", "partial_update"):
             return UserDetailSerializer
         return None
