@@ -2,11 +2,15 @@
 This module implements a factory for dynamically generating ``ModelViewSet``s.
 """
 
+from django.apps import apps
 from django.utils.module_loading import import_string
 
 from action_serializer import ModelActionSerializer
 from rest_framework.serializers import CharField
 from rest_framework.viewsets import ModelViewSet
+
+from .url_inflect import url_deviations
+from ..settings import get_setting
 
 
 class ModelSerializerFactory:
@@ -147,3 +151,32 @@ class ModelViewSetFactory:
         )
 
         return mvs
+
+
+def configure_router(router, print_out=False, **kwargs):
+    """
+    Build an API router using either the settings configuration or overrides provided
+    by kwargs.
+    """
+    p = lambda *args, **kwargs: print(*args, **kwargs) if print_out else None
+    p("AutoREST: building API resources for models:")
+
+    # collect settings, overridable by kwargs
+    api_settings = {}
+    for s in ["default_enable", "default_use_admin_site", "admin_site", "config"]:
+        api_settings[s] = kwargs.get(s, get_setting("AUTOREST_{}".format(s.upper())))
+
+    # build API
+    viewset_factory = ModelViewSetFactory(**api_settings)
+    for app in apps.get_app_configs():
+        for model in app.get_models():
+            viewset = viewset_factory.build(model)
+            if not viewset:
+                continue
+            p(f"  ViewSet: {viewset.__module__}.{viewset.__name__}")
+            for model_url in url_deviations(model.__name__):
+                url_pattern = "{}/{}".format(app.label, model_url)
+                p("    {}".format(url_pattern))
+                router.register(url_pattern, viewset)
+    p("")
+    return router
