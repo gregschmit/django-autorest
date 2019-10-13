@@ -18,7 +18,7 @@ def configure_router(router, silent=False, **kwargs):
 
     # collect settings, overridable by kwargs
     api_settings = {}
-    for s in ['default_enable', 'default_use_admin_site', 'admin_site', 'config']:
+    for s in ["default_enable", "default_use_admin_site", "admin_site", "config"]:
         api_settings[s] = kwargs.get(s, get_setting("AUTOREST_{}".format(s.upper())))
 
     # build API
