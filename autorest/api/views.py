@@ -42,9 +42,9 @@ class ModelViewSetFactory:
     Factory for building ``ModelViewSet`` objects for models.
     """
 
-    def __init__(self, default_enable, default_use_admin, admin_site, config):
+    def __init__(self, default_enable, default_use_admin_site, admin_site, config):
         self.default_enable = default_enable
-        self.default_use_admin = default_use_admin
+        self.default_use_admin_site = default_use_admin_site
         if isinstance(admin_site, str):
             admin_site = import_string(admin_site)
         self.admin_site = admin_site
@@ -62,7 +62,7 @@ class ModelViewSetFactory:
 
     def _get_serializer(self, app, model, model_cfg):
         # check to see if we're using admin
-        use_admin = model_cfg.get("use_admin_site", self.default_use_admin)
+        use_admin = model_cfg.get("use_admin_site", self.default_use_admin_site)
 
         # prepare the Factory
         msf = ModelSerializerFactory(app, model)

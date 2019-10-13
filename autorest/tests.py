@@ -11,8 +11,8 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from . import wsgi
-from .api_url_inflect import url_deviations
-from .api_views import ModelViewSetFactory
+from .api.url_inflect import url_deviations
+from .api.views import ModelViewSetFactory
 from .settings import get_setting
 
 
@@ -58,7 +58,7 @@ class ModelViewSetFactoryTestCase(TestCase):
     def setUp(self):
         self.user_admin_viewset_factory = ModelViewSetFactory(
             default_enable=False,
-            default_use_admin=True,
+            default_use_admin_site=True,
             admin_site=get_setting("AUTOREST_ADMIN_SITE"),
             config={"auth": {"User": {"use_admin_site": True}}},
         )

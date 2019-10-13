@@ -7,20 +7,22 @@ being included by other URL dispatchers.
 from django.apps import apps
 from rest_framework import routers
 
-from .api_views import ModelViewSetFactory
-from .api_url_inflect import url_deviations
-from .settings import get_setting
+from .views import ModelViewSetFactory
+from .url_inflect import url_deviations
+from ..settings import get_setting
 
 
-def configure_router(router, silent=False):
+def configure_router(router, silent=False, **kwargs):
     p = lambda *args, **kwargs: print(*args, **kwargs) if not silent else None
     p("AutoREST: building API resources for models:")
-    viewset_factory = ModelViewSetFactory(
-        default_enable=get_setting("AUTOREST_DEFAULT_ENABLE"),
-        default_use_admin=get_setting("AUTOREST_DEFAULT_USE_ADMIN_SITE"),
-        admin_site=get_setting("AUTOREST_ADMIN_SITE"),
-        config=get_setting("AUTOREST_CONFIG"),
-    )
+
+    # collect settings, overridable by kwargs
+    api_settings = {}
+    for s in ['default_enable', 'default_use_admin_site', 'admin_site', 'config']:
+        api_settings[s] = kwargs.get(s, get_setting("AUTOREST_{}".format(s.upper())))
+
+    # build API
+    viewset_factory = ModelViewSetFactory(**api_settings)
     for app in apps.get_app_configs():
         for model in app.get_models():
             viewset = viewset_factory.build(model)
