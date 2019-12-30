@@ -15,7 +15,12 @@ setup(
     name="django-autorest",
     version=autorest.__version__,
     packages=find_packages(),
-    install_requires=["Django>=2", "djangorestframework>=3", "inflection"],
+    install_requires=[
+        "Django>=2",
+        "djangorestframework>=3",
+        "drf-action-serializer",
+        "inflection",
+    ],
     description=(
         "A re-useable Django app for automatically building a REST API based on models."
     ),
